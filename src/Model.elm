@@ -12,7 +12,7 @@ type Msg
 
 
 type alias Ball a =
-    { a | x : Int, y : Int, velocity : Float, window : Maybe Size }
+    { a | x : Int, y : Int, velocity : Float, window : Size }
 
 
 type alias BallPos a =
@@ -24,7 +24,8 @@ type alias Model =
     , y : Float
     , velocity : Float
     , direction : Float
-    , window : Maybe Size
+    , window : Size
+    , windowDelta : Size
     }
 
 
@@ -32,9 +33,10 @@ init : ( Model, Cmd Msg )
 init =
     ( { x = 300
       , y = 100
-      , velocity = 0.1
+      , velocity = 0.0
       , direction = 1
-      , window = Nothing
+      , window = { width = 0, height = 0 }
+      , windowDelta = { width = 0, height = 0 }
       }
     , windowSizeCmd
       --fetching initial window size

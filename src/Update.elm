@@ -2,6 +2,7 @@ module Update exposing (update)
 
 import Model exposing (Model, Ball, Msg(..))
 import Time exposing (Time)
+import Window exposing (Size)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -12,8 +13,8 @@ update msg model =
 updateHelp : Msg -> Model -> Model
 updateHelp msg model =
     case msg of
-        Resize s ->
-            { model | window = (Just s) }
+        Resize size ->
+            resize model size
 
         TimeUpdate t ->
             physics t model
@@ -22,42 +23,76 @@ updateHelp msg model =
             model
 
 
+resize : Model -> Size -> Model
+resize model size =
+    let
+        sizeDt =
+            { width = size.width - model.window.width, height = size.height - model.window.height }
+    in
+        { model | window = size, windowDelta = sizeDt }
+
+
+resetWindowDt : Model -> Model
+resetWindowDt model =
+    { model | windowDelta = { width = 0, height = 0 } }
+
+
 physics : Time -> Model -> Model
 physics dt model =
+    model |> hitBottom dt |> windDrag dt |> applyGravity dt |> resetWindowDt
+
+
+hitBottom : Time -> Model -> Model
+hitBottom dt model =
     let
-        height' =
-            (Maybe.withDefault { width = 0, height = 0 } model.window).height
+        height =
+            toFloat (model.window.height - 200)
     in
-        case hitBottom model.y height' of
+        case model.y >= height of
             True ->
-                { model | y = height' - 200, velocity = 0 }
+                bounce dt model
 
             False ->
-                applyPhysics dt model
+                model
 
 
-hitBottom y bottom =
-    y >= bottom - 200
+windDrag : Time -> Model -> Model
+windDrag dt model =
+    let
+        drag =
+            model.velocity * dt * 0.0005
+    in
+        { model | velocity = model.velocity - drag }
 
 
-applyPhysics dt model =
+bounce : Time -> Model -> Model
+bounce dt model =
     let
         y' =
-            model.y
+            if model.velocity < 0.2 then
+                toFloat (model.window.height - 200)
+            else
+                toFloat (model.window.height - 200 - 1)
 
+        bottomSpeed =
+            toFloat model.windowDelta.height * 0.2
+    in
+        { model
+            | y = y'
+            , velocity = bottomSpeed + (model.velocity * -0.7)
+        }
+
+
+applyGravity : Time -> Model -> Model
+applyGravity dt model =
+    let
         v' =
             model.velocity + 0.1
 
         direction =
             model.direction
 
-        size' =
-            Maybe.withDefault { width = 0, height = 0 } model.window
-
-        height' =
-            size'.height
-
         newY =
-            y' + v' * dt
+            model.y + v' * dt
     in
         { model | y = newY, velocity = v' }

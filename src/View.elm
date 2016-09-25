@@ -6,7 +6,6 @@ import Html.Attributes as HA exposing (style)
 import Svg.Attributes as SA exposing (..)
 import Svg exposing (..)
 import Window exposing (Size)
-import Maybe exposing (withDefault)
 import Css as C exposing (..)
 
 
@@ -16,7 +15,7 @@ view model =
         [ status model, (ball model model.window) ]
 
 
-ball : BallPos Model -> Maybe Size -> Html Msg
+ball : BallPos Model -> Size -> Html Msg
 ball pos size =
     let
         ballRad =
@@ -27,7 +26,7 @@ ball pos size =
     in
         div [ ballPos pos.x pos.y ]
             [ svg [ SA.viewBox "0 0 100 100", SA.width ballWidth ]
-                [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] [] ]
+                [ circle [ cx "50", cy "50", r "49", fill "#0B79CE" ] [] ]
             ]
 
 
@@ -40,18 +39,16 @@ status model =
     div [] <|
         List.map H.text
             [ "Model:"
-            , (showWindowSize model.window)
-            , "Y"
-            , toString model.y
-            , "X"
-            , toString model.x
-            , "velocity"
-            , toString model.velocity
+            , (toString model.window)
+            , " Y "
+            , toString <| round model.y
+            , " X "
+            , toString <| round model.x
+            , " velocity "
+            , toString <| round model.velocity
+            , " deltaWindow "
+            , toString <| model.windowDelta.height
             ]
-
-
-showWindowSize window =
-    toString <| withDefault { height = 0, width = 0 } window
 
 
 styles : List Mixin -> H.Attribute a
