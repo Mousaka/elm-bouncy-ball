@@ -25,6 +25,23 @@ updateHelp msg model =
 physics : Time -> Model -> Model
 physics dt model =
     let
+        height' =
+            (Maybe.withDefault { width = 0, height = 0 } model.window).height
+    in
+        case hitBottom model.y height' of
+            True ->
+                { model | y = height' - 200, velocity = 0 }
+
+            False ->
+                applyPhysics dt model
+
+
+hitBottom y bottom =
+    y >= bottom - 200
+
+
+applyPhysics dt model =
+    let
         y' =
             model.y
 
@@ -41,14 +58,6 @@ physics dt model =
             size'.height
 
         newY =
-            if y' > height' - 200 then
-                height' - 200
-            else
-                y' + v' * dt
+            y' + v' * dt
     in
-        case y' < height' - 200.0 of
-            True ->
-                { model | y = newY, velocity = v' }
-
-            False ->
-                model
+        { model | y = newY, velocity = v' }
