@@ -4,7 +4,7 @@ import Model exposing (Model, BallPos, Msg)
 import Html as H exposing (Html, div, text)
 import Html.Attributes as HA exposing (style)
 import Svg.Attributes as SA exposing (..)
-import Svg exposing (..)
+import Svg as S exposing (..)
 import Window exposing (Size)
 import Css as C exposing (..)
 
@@ -26,7 +26,7 @@ ball pos size =
     in
         div [ ballPos pos.x pos.y ]
             [ svg [ SA.viewBox "0 0 100 100", SA.width ballWidth ]
-                [ circle [ cx "50", cy "50", r "49", fill "#0B79CE" ] [] ]
+                [ S.circle [ cx "50", cy "50", r "49", fill "#0B79CE" ] [] ]
             ]
 
 
@@ -41,11 +41,11 @@ status model =
             [ "Model:"
             , (toString model.window)
             , " Y "
-            , toString <| round model.y
+            , toString <| Basics.round model.y
             , " X "
-            , toString <| round model.x
+            , toString <| Basics.round model.x
             , " velocity "
-            , toString <| round model.velocity
+            , toString <| Basics.round model.velocity
             , " deltaWindow "
             , toString <| model.windowDelta.height
             ]

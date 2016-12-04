@@ -50,4 +50,4 @@ windowSize =
 
 windowSizeCmd : Cmd Msg
 windowSizeCmd =
-    perform FetchErrors Resize windowSize
+    perform Resize windowSize

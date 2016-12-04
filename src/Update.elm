@@ -68,7 +68,7 @@ windDrag dt model =
 bounce : Time -> Model -> Model
 bounce dt model =
     let
-        y' =
+        y_ =
             if model.velocity < 0.2 then
                 toFloat (model.window.height - 200)
             else
@@ -78,7 +78,7 @@ bounce dt model =
             toFloat model.windowDelta.height * 0.2
     in
         { model
-            | y = y'
+            | y = y_
             , velocity = bottomSpeed + (model.velocity * -0.7)
         }
 
@@ -86,13 +86,10 @@ bounce dt model =
 applyGravity : Time -> Model -> Model
 applyGravity dt model =
     let
-        v' =
+        v_ =
             model.velocity + 0.1
 
-        direction =
-            model.direction
-
         newY =
-            model.y + v' * dt
+            model.y + v_ * dt
     in
-        { model | y = newY, velocity = v' }
+        { model | y = newY, velocity = v_ }

@@ -4,10 +4,10 @@ import Model exposing (Model, init)
 import Update exposing (update)
 import View exposing (view)
 import Subscriptions exposing (subscriptions)
-import Html.App exposing (program)
+import Html exposing (program)
 
 
-main : Program Never
+main : Program Never Model Model.Msg
 main =
     program
         { init = init
