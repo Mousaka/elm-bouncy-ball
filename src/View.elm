@@ -37,6 +37,7 @@ ball model size =
                 webglView model
 
 
+svgView : BallPos Model -> String -> Html Msg
 svgView pos ballWidth =
     div [ ballPos pos.x pos.y ]
         [ svg [ SA.viewBox "0 0 100 100", SA.width ballWidth ]
@@ -44,11 +45,22 @@ svgView pos ballWidth =
         ]
 
 
-webglView ballPosition =
-    Game.renderCentered { time = 0, camera = Camera.fixedHeight 7 ( 0, 1.5 ), size = ( 800, 600 ) }
-        [ Render.rectangle { color = Color.blue, position = ( ballPosition.x, ballPosition.y ), size = ( 0.2, 0.2 ) }
-        , Render.rectangle { color = Color.green, position = ( -10, -10 ), size = ( 20, 10 ) }
-        ]
+webglView : Model -> Html Msg
+webglView model =
+    let
+        windowSize =
+            ( model.window.width, model.window.height )
+
+        pos =
+            ( -model.x, -model.y - (toFloat model.window.height / 2) )
+    in
+        Game.render
+            { time = 0
+            , camera = Camera.fixedHeight (toFloat 930) ( 0, 1 )
+            , size = windowSize
+            }
+            [ Render.rectangle { color = Color.blue, position = ( -model.x, -model.y ), size = ( 20.7, 20.7 ) }
+            ]
 
 
 ballPos : Float -> Float -> H.Attribute a
@@ -56,6 +68,7 @@ ballPos x y =
     styles [ C.position (absolute), C.top (px y), C.left (px x) ]
 
 
+status : Model -> Html Msg
 status model =
     div [] <|
         List.map H.text
