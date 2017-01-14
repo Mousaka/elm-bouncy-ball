@@ -1,4 +1,4 @@
-module Model exposing (Model, Ball, BallPos, init, Msg(..))
+module Model exposing (Model, Ball, BallPos, ViewType(..), init, Msg(..))
 
 import Window exposing (Size, size)
 import Task exposing (perform)
@@ -9,6 +9,12 @@ type Msg
     = Resize Size
     | FetchErrors String
     | TimeUpdate Time
+    | SwitchViewType
+
+
+type ViewType
+    = Webgl
+    | Svg_
 
 
 type alias Ball a =
@@ -26,6 +32,7 @@ type alias Model =
     , direction : Float
     , window : Size
     , windowDelta : Size
+    , viewType : ViewType
     }
 
 
@@ -37,6 +44,7 @@ init =
       , direction = 1
       , window = { width = 0, height = 0 }
       , windowDelta = { width = 0, height = 0 }
+      , viewType = Svg_
       }
     , windowSizeCmd
       --fetching initial window size

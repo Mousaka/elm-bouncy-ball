@@ -1,6 +1,6 @@
 module Update exposing (update)
 
-import Model exposing (Model, Ball, Msg(..))
+import Model exposing (Model, Ball, ViewType(..), Msg(..))
 import Time exposing (Time)
 import Window exposing (Size)
 
@@ -21,6 +21,17 @@ updateHelp msg model =
 
         FetchErrors _ ->
             model
+
+        SwitchViewType ->
+            { model
+                | viewType =
+                    case model.viewType of
+                        Svg_ ->
+                            Webgl
+
+                        Webgl ->
+                            Svg_
+            }
 
 
 resize : Model -> Size -> Model
